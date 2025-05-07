@@ -33,6 +33,7 @@ class SenseBoxBLE
         static void setName(String name);
         static String getMCUId();
 
+        static bool write(int characteristic, uint8_t* value, int len);
         static bool write(int, float&);
         static bool write(int, float&, float&);
         static bool write(int, float&, float&, float&);

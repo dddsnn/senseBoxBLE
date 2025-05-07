@@ -166,6 +166,19 @@ void SenseBoxBLE::read(float& f)
 }
 
 /**
+ * @brief Writes a buffer to a characteristic.
+ *
+ * @param characteristic The ID of the characteristic to write to.
+ * @param data The buffer to write.
+ * @param len The length of the buffer.
+ * @return true if the write was successful, false otherwise.
+ */
+bool SenseBoxBLE::write(int characteristic, uint8_t *data, int len)
+{
+  return port.writeValue(characteristic, data, len);
+}
+
+/**
   * @brief Writes a float value to a characteristic.
   *
   * @param characteristic The ID of the characteristic to write to.
