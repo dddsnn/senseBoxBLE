@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.yaml.tpl": "yaml",
+        "cstdint": "cpp",
+        "ostream": "cpp"
+    }
+}
