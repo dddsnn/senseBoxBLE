@@ -1,9 +1,38 @@
 //#if defined(ARDUINO_SAMD_MKR1000)
 //#if defined(SENSEBOX_MCU_S2)
 
-#include "Arduino.h"
 #include <stdio.h>
 #include "SenseBoxBLE.h"
+
+
+uint8_t CharacteristicProperties::BROADCAST = 0x01;
+uint8_t CharacteristicProperties::READ = 0x02;
+uint8_t CharacteristicProperties::WRITE_NO_RESPONSE = 0x04;
+uint8_t CharacteristicProperties::WRITE = 0x08;
+uint8_t CharacteristicProperties::NOTIFY = 0x10;
+uint8_t CharacteristicProperties::INDICATE = 0x20;
+uint8_t CharacteristicProperties::AUTH_SIGNED_WRITE = 0x40;
+
+CharacteristicProperties::CharacteristicProperties(
+    bool broadcast, bool read, bool write_no_response, bool write,
+    bool notify, bool indicate, bool auth_signed_write) :
+    broadcast(broadcast), read(read), write_no_response(write_no_response),
+    write(write), notify(notify), indicate(indicate),
+    auth_signed_write(auth_signed_write) {}
+
+String CharacteristicProperties::asHexString() const {
+    uint8_t flags = 0;
+    if (broadcast) {flags |= BROADCAST;}
+    if (read) { flags |= READ;}
+    if (write_no_response) { flags |= WRITE_NO_RESPONSE;}
+    if (write) { flags |= WRITE;}
+    if (notify) { flags |= NOTIFY;}
+    if (indicate) { flags |= INDICATE;}
+    if (auth_signed_write) { flags |= AUTH_SIGNED_WRITE;}
+    char buf[3];
+    snprintf(buf, 3, "%x", flags);
+    return String(buf);
+}
 
 uint16_t SenseBoxBLE::minConInterval = 12;  //7.5ms
 uint16_t SenseBoxBLE::maxConInterval = 48; //30ms
@@ -87,10 +116,30 @@ String SenseBoxBLE::getMCUId(){
   * @brief Adds a characteristic to the BLE module.
   *
   * @param characteristicUUID The UUID of the characteristic to be added.
+  * @param properties The properties of the characteristic.
+  * @return The ID of the characteristic if successful, -1 otherwise.
+  */
+int SenseBoxBLE::addCharacteristic(
+    const char* characteristicUUID,
+    const CharacteristicProperties& properties) {
+    String command = String("AT+UBTGCHA=");
+    command += characteristicUUID;
+    command += ",";
+    command += properties.asHexString();
+    command += ",1,1";
+    return port.parseResponse(command, 1000);
+}
+
+/**
+  * @brief Adds a characteristic to the BLE module.
+  *
+  * @param characteristicUUID The UUID of the characteristic to be added.
   * @return The ID of the characteristic if successful, -1 otherwise.
   */
 int SenseBoxBLE::addCharacteristic(const char* characteristicUUID){
-  return port.parseResponse(String("AT+UBTGCHA=")+characteristicUUID+",1a,1,1",1000);
+  CharacteristicProperties properties = CharacteristicProperties(
+    false, true, false, true, true, false, false);
+  return addCharacteristic(characteristicUUID, properties);
 }
 
 int SenseBoxBLE::setConfigCharacteristic(const char* serviceUUID, const char* characteristicUUID){

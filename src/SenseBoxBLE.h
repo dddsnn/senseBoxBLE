@@ -1,4 +1,29 @@
+#include "Arduino.h"
 #include "NINAB31serial.h"
+
+class CharacteristicProperties
+{
+private:
+    static uint8_t BROADCAST;
+    static uint8_t READ;
+    static uint8_t WRITE_NO_RESPONSE;
+    static uint8_t WRITE;
+    static uint8_t NOTIFY;
+    static uint8_t INDICATE;
+    static uint8_t AUTH_SIGNED_WRITE;
+    const bool broadcast;
+    const bool read;
+    const bool write_no_response;
+    const bool write;
+    const bool notify;
+    const bool indicate;
+    const bool auth_signed_write;
+public:
+    CharacteristicProperties(
+        bool broadcast, bool read, bool write_no_response, bool write,
+        bool notify, bool indicate, bool auth_signed_write);
+    String asHexString() const;
+};
 
 class SenseBoxBLE
 {
@@ -28,6 +53,9 @@ class SenseBoxBLE
         static bool stopAdvertise();
 
         static int addService(const char* serviceUUID);
+        static int addCharacteristic(
+            const char* characteristicUUID,
+            const CharacteristicProperties& properties);
         static int addCharacteristic(const char* characteristicUUID);
         static int setConfigCharacteristic(const char* serviceUUID, const char* characteristicUUID);
         static void setName(String name);
