@@ -1,3 +1,6 @@
+#ifndef SENSEBOXBLE_H
+#define SENSEBOXBLE_H
+
 #include "Arduino.h"
 #include "NINAB31serial.h"
 
@@ -81,3 +84,5 @@ class SenseBoxBLE
         static uint16_t timeout;
 
 };
+
+#endif
