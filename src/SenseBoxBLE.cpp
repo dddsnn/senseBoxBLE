@@ -254,6 +254,10 @@ void SenseBoxBLE::read(float& f)
 bool SenseBoxBLE::write(
     int characteristic, uint8_t const *data, std::size_t len)
 {
+  if (len > _properties.characteristicMaxLength)
+  {
+    return false;
+  }
   return port.writeValue(characteristic, data, len);
 }
 

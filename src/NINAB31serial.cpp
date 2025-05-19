@@ -66,32 +66,31 @@ bool NINAB31Serial::setConnectionInterval(int minInterval, int maxInterval){
     return checkResponse(String("AT+UBTLECFG=1,")+minInterval,1000) && checkResponse(String("AT+UBTLECFG=2,")+maxInterval,1000);
 }
 
-bool NINAB31Serial::writeValue(int characteristic, String value){
-    if(!connected){
-        return false;
-    }
-    if(value.length()>40){
-        return false;
-    }
-    return checkResponse(String("AT+UBTGSN=0,")+characteristic+","+value, 1000);
+bool NINAB31Serial::writeValue(int characteristic, String value)
+{
+  if (!connected)
+  {
+    return false;
+  }
+  return checkResponse(
+      String("AT+UBTGSN=0,") + characteristic + "," + value, 1000);
 }
 
 bool NINAB31Serial::writeValue(
-    int characteristic, uint8_t const *data, std::size_t len){
-    if(!connected){
-        return false;
-    }
-    if(len>20){
-        return false;
-    }
-    auto msg=String("AT+UBTGSN=0,")+characteristic+",";
-    for(int i=0;i<len;i++){
-        msg+=String((data[i]&0xf0)>>4,HEX);
-        msg+=String((data[i]&0xf),HEX);
-    }
-    return checkResponse(msg, 1000);
+    int characteristic, uint8_t const *data, std::size_t len)
+{
+  if (!connected)
+  {
+    return false;
+  }
+  auto msg = String("AT+UBTGSN=0,") + characteristic + ",";
+  for (int i = 0; i < len; i++)
+  {
+    msg += String((data[i] & 0xf0) >> 4, HEX);
+    msg += String((data[i] & 0xf), HEX);
+  }
+  return checkResponse(msg, 1000);
 }
-
 
 
 int NINAB31Serial::parseResponse(String cmd, uint32_t timeout){
