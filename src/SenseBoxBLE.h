@@ -30,10 +30,17 @@ public:
     String asHexString() const;
 };
 
+class BLEProperties
+{
+public:
+    BLEProperties(unsigned int characteristicMaxLength);
+    unsigned int characteristicMaxLength;
+};
+
 class SenseBoxBLE
 {
     private:
-
+        static BLEProperties _properties;
         static uint8_t data_package[20];
 
         static NINAB31Serial port;
@@ -48,11 +55,22 @@ class SenseBoxBLE
 
 
     public:
-
+        static BLEProperties const &properties();
         static void start(const char* DEVICE_NAME, uint8_t* p, size_t n = 0);
         static void start(const char* DEVICE_NAME);
         static void start(uint8_t* p, size_t n = 0);
         static void start();
+
+        /**
+         * @brief Enable MTU size negotiation.
+         *
+         * Configure the device to actively try to increase the MTU to allow for
+         * larger characteristic values. The default maximum characteristic size
+         * is 20 bytes, this setting enables the device to use up to 244 bytes
+         * (assuming the other side supports it). Check
+         * properties().characteristicMaxLength for the effective value.
+         */
+        static bool enableMtuSizeNegotiation();
 
         static bool advertise();
         static bool stopAdvertise();

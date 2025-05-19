@@ -34,6 +34,12 @@ String CharacteristicProperties::asHexString() const {
     return String(buf);
 }
 
+BLEProperties::BLEProperties(
+    unsigned int characteristicMaxLength)
+    : characteristicMaxLength(characteristicMaxLength) {}
+
+// The default characteristic max length is 20 bytes.
+BLEProperties SenseBoxBLE::_properties = BLEProperties(20);
 uint16_t SenseBoxBLE::minConInterval = 12;  //7.5ms
 uint16_t SenseBoxBLE::maxConInterval = 48; //30ms
 uint16_t SenseBoxBLE::slaveLatency = 0;
@@ -46,6 +52,11 @@ uint8_t* SenseBoxBLE::data = nullptr; //this pointer points to the data the user
 uint8_t SenseBoxBLE::configCharValue[21]={0};
 
 void(*SenseBoxBLE::configHandler)() = nullptr;
+
+BLEProperties const &SenseBoxBLE::properties()
+{
+  return _properties;
+}
 
 /**
   * @brief Starts the BLE module and sets the device name.
@@ -92,6 +103,24 @@ bool SenseBoxBLE::advertise(){
   */
 bool SenseBoxBLE::stopAdvertise(){
   return port.stopAdvertise();
+}
+
+bool SenseBoxBLE::enableMtuSizeNegotiation()
+{
+  // Send the command to enable MTU size negotiation, and assume that if it
+  // succeeds, we can use 244 byte characteristics (the maximum). Technically,
+  // the other side may not support this. We could check this on a
+  // per-connection basis using an UBTLESTAT command.
+  auto success = port.checkResponse("AT+UBTLECFG=26,1", 1000);
+  if (success)
+  {
+    _properties.characteristicMaxLength = 244;
+  }
+  else
+  {
+    _properties.characteristicMaxLength = 20;
+  }
+  return success;
 }
 
 /**
