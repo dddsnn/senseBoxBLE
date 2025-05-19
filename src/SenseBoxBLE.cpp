@@ -237,7 +237,7 @@ bool SenseBoxBLE::write(int characteristic, uint8_t *data, std::size_t len)
 bool SenseBoxBLE::write(int characteristic, float& value)
 {
   data = reinterpret_cast<uint8_t*>(&value);
-  return port.writeValue(characteristic,data,4);
+  return write(characteristic, data, 4);
 }
 
 /**
@@ -252,7 +252,7 @@ bool SenseBoxBLE::write(int characteristic, float& f1, float& f2)
 {
   float array[2] = {f1, f2};
   data = reinterpret_cast<uint8_t*>(array);
-  return port.writeValue(characteristic,data,8);
+  return write(characteristic, data, 8);
 }
 
 /**
@@ -268,7 +268,7 @@ bool SenseBoxBLE::write(int characteristic, float& f1, float& f2, float& f3)
 {
   float array[3] = {f1, f2, f3};
   data = reinterpret_cast<uint8_t*>(array);
-  return port.writeValue(characteristic,data,12);
+  return write(characteristic, data, 12);
 }
 
  /**
@@ -285,7 +285,7 @@ bool SenseBoxBLE::write(int characteristic, float& f1, float& f2, float& f3 , fl
 {
   float array[4] = {f1, f2, f3, f4};
   data = reinterpret_cast<uint8_t*>(array);
-  return port.writeValue(characteristic,data,16);
+  return write(characteristic, data, 16);
 }
 
 /**
@@ -303,7 +303,7 @@ bool SenseBoxBLE::write(int characteristic, float& f1, float& f2, float& f3 , fl
 {
   float array[5] = {f1, f2, f3, f4, f5};
   data = reinterpret_cast<uint8_t*>(array);
-  return port.writeValue(characteristic,data,20);
+  return write(characteristic, data, 20);
 }
 
 //#endif
