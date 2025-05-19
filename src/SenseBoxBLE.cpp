@@ -261,6 +261,16 @@ bool SenseBoxBLE::write(
   return port.writeValue(characteristic, data, len);
 }
 
+String SenseBoxBLE::writeReturningError(
+    int characteristic, uint8_t const *data, std::size_t len)
+{
+  if (len > _properties.characteristicMaxLength)
+  {
+    return "too long";
+  }
+  return port.writeValueReturningError(characteristic, data, len);
+}
+
 /**
   * @brief Writes a float value to a characteristic.
   *

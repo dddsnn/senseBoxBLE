@@ -22,11 +22,14 @@ class NINAB31Serial
     static bool writeValue(int characteristic, String value);
     static bool writeValue(
         int characteristic, uint8_t const *data, std::size_t len);
+    static String writeValueReturningError(
+        int characteristic, uint8_t const *data, std::size_t len);
     static bool setConnectionInterval(int minInterval, int maxInterval);
 
     static int parseResponse(String msg, uint32_t timeout);
     static String parseStringResponse(String msg, uint32_t timeout);
     static bool checkResponse(String msg, uint32_t timeout);
+    static String checkResponseReturningError(String msg, uint32_t timeout);
     static bool poll();
     static String checkCharWritten(int handle);
     static void flushInput();

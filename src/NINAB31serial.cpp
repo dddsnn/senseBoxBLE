@@ -92,6 +92,22 @@ bool NINAB31Serial::writeValue(
   return checkResponse(msg, 1000);
 }
 
+String NINAB31Serial::writeValueReturningError(
+    int characteristic, uint8_t const *data, std::size_t len)
+{
+  if (!connected)
+  {
+    return "not conn";
+  }
+  auto msg = String("AT+UBTGSN=0,") + characteristic + ",";
+  for (int i = 0; i < len; i++)
+  {
+    // PERF is this a great idea performance-wise? does this matter?++++++++
+    msg += String((data[i] & 0xf0) >> 4, HEX);
+    msg += String((data[i] & 0xf), HEX);
+  }
+  return checkResponseReturningError(msg, 10000);
+}
 
 int NINAB31Serial::parseResponse(String cmd, uint32_t timeout){
   while(SerialBLE.available()){
@@ -162,6 +178,33 @@ String NINAB31Serial::parseStringResponse(String cmd, uint32_t timeout){
     }
   }
   return "-1";
+}
+
+String NINAB31Serial::checkResponseReturningError(String msg, uint32_t timeout)
+{
+  while (SerialBLE.available())
+    SerialBLE.read(); // flush input buffer
+  SerialBLE.print(msg);
+  SerialBLE.write('\r');
+  SerialBLE.flush();
+  String input = "";
+  auto starttime = millis();
+  while (millis() - starttime < timeout || timeout == 0)
+  {
+    if (SerialBLE.available())
+    {
+      input += (char)(SerialBLE.read());
+      if (input.endsWith("ERROR\r"))
+      {
+        return input;
+      }
+      else if (input.endsWith("OK\r"))
+      {
+        return "";
+      }
+    }
+  }
+  return "timeout";
 }
 
 bool NINAB31Serial::checkResponse(String msg, uint32_t timeout){

@@ -86,6 +86,8 @@ class SenseBoxBLE
 
         static bool write(
             int characteristic, uint8_t const *data, std::size_t len);
+        static String writeReturningError(
+            int characteristic, uint8_t const *data, std::size_t len);
         static bool write(int, float&);
         static bool write(int, float&, float&);
         static bool write(int, float&, float&, float&);
