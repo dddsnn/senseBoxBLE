@@ -76,7 +76,8 @@ bool NINAB31Serial::writeValue(int characteristic, String value){
     return checkResponse(String("AT+UBTGSN=0,")+characteristic+","+value, 1000);
 }
 
-bool NINAB31Serial::writeValue(int characteristic, uint8_t* value, int len){
+bool NINAB31Serial::writeValue(
+    int characteristic, uint8_t* value, std::size_t len){
     if(!connected){
         return false;
     }

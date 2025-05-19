@@ -1,6 +1,8 @@
 #ifndef SENSEBOXBLE_H
 #define SENSEBOXBLE_H
 
+#include <cstddef>
+
 #include "Arduino.h"
 #include "NINAB31serial.h"
 
@@ -64,7 +66,7 @@ class SenseBoxBLE
         static void setName(String name);
         static String getMCUId();
 
-        static bool write(int characteristic, uint8_t* value, int len);
+        static bool write(int characteristic, uint8_t *value, std::size_t len);
         static bool write(int, float&);
         static bool write(int, float&, float&);
         static bool write(int, float&, float&, float&);
