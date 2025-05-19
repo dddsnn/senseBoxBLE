@@ -222,7 +222,8 @@ void SenseBoxBLE::read(float& f)
  * @param len The length of the buffer.
  * @return true if the write was successful, false otherwise.
  */
-bool SenseBoxBLE::write(int characteristic, uint8_t *data, std::size_t len)
+bool SenseBoxBLE::write(
+    int characteristic, uint8_t const *data, std::size_t len)
 {
   return port.writeValue(characteristic, data, len);
 }

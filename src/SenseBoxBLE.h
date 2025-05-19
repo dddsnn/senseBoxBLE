@@ -66,7 +66,8 @@ class SenseBoxBLE
         static void setName(String name);
         static String getMCUId();
 
-        static bool write(int characteristic, uint8_t *value, std::size_t len);
+        static bool write(
+            int characteristic, uint8_t const *data, std::size_t len);
         static bool write(int, float&);
         static bool write(int, float&, float&);
         static bool write(int, float&, float&, float&);

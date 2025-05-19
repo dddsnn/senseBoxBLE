@@ -20,7 +20,8 @@ class NINAB31Serial
     static bool begin();
     static bool setLocalName(String name);
     static bool writeValue(int characteristic, String value);
-    static bool writeValue(int characteristic, uint8_t *value, std::size_t len);
+    static bool writeValue(
+        int characteristic, uint8_t const *data, std::size_t len);
     static bool setConnectionInterval(int minInterval, int maxInterval);
 
     static int parseResponse(String msg, uint32_t timeout);
